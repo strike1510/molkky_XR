@@ -1,0 +1,22 @@
+import assert from 'node:assert/strict';
+import { calculerPoints, Partie, estMeilleur } from '../js/game.js';
+assert.equal(calculerPoints([]), 0);
+assert.equal(calculerPoints([9]), 9);
+assert.equal(calculerPoints([3, 12, 7]), 3);
+let p = new Partie('normal');
+for (const q of [[12], [12], [12], [11]]) p.enregistrerLancer(q); // 47
+assert.equal(p.score, 47);
+assert.equal(p.enregistrerLancer([5]), 'depassement'); assert.equal(p.score, 25);
+assert.equal(p.enregistrerLancer([]), 'sans_point'); assert.equal(p.echecs, 1);
+p.enregistrerLancer([1, 2]); assert.equal(p.echecs, 0); assert.equal(p.score, 27);
+p.enregistrerLancer([12]); p.enregistrerLancer([7]);
+assert.equal(p.enregistrerLancer([1, 2, 3, 4]), 'victoire'); assert.equal(p.score, 50);
+assert.equal(p.etat, 'victoire'); assert.equal(p.numeroLancer, 10);
+assert.deepEqual(p.lancers[2], { lancer: 3, quilles: [12], points: 12, scoreTotal: 36 });
+p = new Partie('facile');
+p.enregistrerLancer([]); p.enregistrerLancer([]);
+assert.equal(p.enregistrerLancer([]), 'defaite'); assert.equal(p.etat, 'defaite');
+assert.equal(p.enregistrerLancer([5]), null);
+assert.ok(estMeilleur({ victoire: true, lancers: 8, temps: 90 }, { victoire: true, lancers: 9, temps: 10 }));
+assert.ok(!estMeilleur({ victoire: false, score: 40 }, { victoire: true, lancers: 20, temps: 999 }));
+console.log('Règles OK');
